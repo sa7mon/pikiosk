@@ -13,7 +13,9 @@ def idToVid(id):
 # printTag
 # function that gets the id we need. Runs only when on-connect event is raised.
 def printTag(tag):
-    print(tag)
+    # We're only interested in the ID. 
+    tagID = str(tag).split("ID=", 1)[1]
+    print tagID
     return
 
 print "Initiating reader..."
