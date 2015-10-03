@@ -7,7 +7,21 @@ import nfc
 
 #IDtoVideo
 def idToVid(id):
-    videolookup = ((1, "video1"), (2, "video2"), (3, "video3"))
+    videolookup = (
+		   ("04C023D24C2880", "video1"), 
+		   ("048D495A002980", "video2"), 
+		   ("3", "video3")
+		  )
+    videolookup2 = ("04C023D24C2880:video1", "048D495A002980:video2")
+    
+    # Loop through the array, checking each item to see if it starts with the ID we were given.
+    for entry in videolookup2:
+        # Do something
+	entryid = entry.split(":", 2)[0] # Should give us just the string before the colon
+	entryvideo = entry.split(":", 2)[1]
+	print "entryid: ", entryid # DEBUG
+	print "entryvideo: ", entryvideo # DEBUG
+
     return
 
 # printTag
@@ -16,6 +30,7 @@ def printTag(tag):
     # We're only interested in the ID. 
     tagID = str(tag).split("ID=", 1)[1]
     print tagID
+    print idToVid(id)
     return
 
 print "Initiating reader..."
