@@ -5,12 +5,24 @@
 #
 import nfc 
 
-def connected(tag):
-    print(tag);
+#IDtoVideo
+def idToVid(id):
+    videolookup = ((1, "video1"), (2, "video2"), (3, "video3"))
     return
 
-print "Initiating reader...";
-clf = nfc.ContactlessFrontend('tty');
+# printTag
+# function that gets the id we need. Runs only when on-connect event is raised.
+def printTag(tag):
+    print(tag)
+    return
 
-print "Waiting for tag to read...";
-clf.connect(rdwr={'on-connect': connected});
+print "Initiating reader..."
+# Setup our reader connection through UART
+# To verify from Python CLI, print(clf) should result in /dev/AMA0
+clf = nfc.ContactlessFrontend('tty')
+
+loop = 1;
+# Continuously listen for tags nearby. Fire an event when we see one.
+while loop == 1: 
+    print "Waiting for tag to read..."
+    clf.connect(rdwr={'on-connect': printTag})
