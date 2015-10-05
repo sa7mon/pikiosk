@@ -40,7 +40,25 @@ def printTag(tag):
     print "Video: ", idToVid(tagID)
     return
 
+# readFile
+# Reads a file into a dictionary
+# File needs to be in key=value format
+def readFile(file):
+        readDict = {}
+        with open(file, "r") as text:
+                for line in text:
+                        # For each line in the test file, do the following
+            		# Split the line into 2 lines delimited by the equal sign
+            		# Make the first string the dict key and the second the dict value
+                        readDict[line.split('=', 2)[0]] = line.split('=', 2)[1].strip('\n')
+                #print readDict # DEBUG
+        return readDict
+
 ##################   MAIN PROGRAM   ####################### 
+
+# Read the file with videos and tag IDs into a dict
+print "Reading videos file..."
+videoDict = readFile("videos.txt")
 
 # Setup our reader connection through UART
 # To verify from Python CLI, print(clf) should result in /dev/AMA0
