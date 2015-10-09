@@ -14,7 +14,7 @@ import nfc
 def printTag(tag):
     # We're only interested in the ID. 
     tagID = str(tag).split("ID=", 1)[1]
-    print "Tag ID: ", tagID
+    print "Tag ID: ", tagID, "\n"
     return
 
 def readTag():
@@ -33,8 +33,8 @@ def readTag():
 # To verify from Python CLI, print(clf) should result in /dev/AMA0
 print "Initiating reader..."
 try:
-    #clf = nfc.ContactlessFrontend('tty')
-    print "Reader initiated." #DEBUG?
+    clf = nfc.ContactlessFrontend('tty')
+    print "Reader initiated.\n" #DEBUG?
 except IOError:
     print "Couldn't initialize reader (IOError)"
 else: 
@@ -49,10 +49,12 @@ else:
         userInput = raw_input("Enter a choice: ")
         
         if userInput == "1":
-            print "I'm number 1!"
+            print "Waiting for tag..."
+            clf.connect(rdwr={'on-connect': printTag})
         elif userInput == "2":
-            print "I'm number 2!"
+            quit = True
         else:
             print "Not a valid choice. Please try again."
         
-        
+    # User has chosen to quit if you get here.
+    print "Goodbye!"
