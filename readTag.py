@@ -1,8 +1,14 @@
 #!/usr/bin/env python
-#####
+
+######################################################################
 # Created by: Dan Salmon
 # Created on: 10/8/15
-#####
+#
+# readTag.py - Simple script made so videos.txt can be updated later by a non-technical
+#              individual. Run the script, scan a tag and it will give you the
+#              tag's ID. Script should be placed on Desktop or shortcut created.
+#######################################################################
+
 
 ################   IMPORTS   #################
 import nfc 
@@ -17,16 +23,6 @@ def printTag(tag):
     print "Tag ID: ", tagID, "\n"
     return
 
-def readTag():
-    # Continuously listen for tags nearby. Fire an event when we see one.
-    # Make loop not 1 if loop needs to break
-    waitingForTag = 1
-    while waitingForTag == 1: 
-        print "Waiting for tag to read..."
-        clf.connect(rdwr={'on-connect': printTag})
-        
-    return
-
 ############## MAIN PROGRAM  #################
 
 # Setup our reader connection through UART
@@ -38,7 +34,7 @@ try:
 except IOError:
     print "Couldn't initialize reader (IOError)"
 else: 
-    
+    # Set loop flag to False. Change to anything else to exit menu loop.
     quit = False
     
     while quit == False:
@@ -50,8 +46,12 @@ else:
         
         if userInput == "1":
             print "Waiting for tag..."
+            
+            # Set function to fire on on-connect event.
+            # http://nfcpy.org/latest/topics/get-started.html#read-and-write-tags
             clf.connect(rdwr={'on-connect': printTag})
         elif userInput == "2":
+            # Set loop flag to not-false to exit menu loop.
             quit = True
         else:
             print "Not a valid choice. Please try again."
