@@ -16,26 +16,27 @@ def closeReader():
 	# Close the reader
 	#nfc.closeReader(clf)
 	# Then set loop to not 1 to cleanly exit program instead of suspending it.
+	
 	global loop 
 	loop = 0
 	return
 
-# idToVid
-# Takes a tag ID and checks it against an array of arrays with items set up as:
-# (tagID, video) and returns the video.
-def idToVid(id):
-    # Give the return variable a default value of error.
-    # Hopefully, this doesn't get returned.
-
-    return video
-
-# printTag
-# function that gets the id we need. Runs only when on-connect event is raised.
-def printTag(tag):
-    # We're only interested in the ID. 
+def tagToVid(tag):
+    global loop
+    global videoDict
+    global lightsColorsDict
+    
+    # Get the tag's ID 
     tagID = str(tag).split("ID=", 1)[1]
-    print "Tag ID: ", tagID
-    print "Video: ", idToVid(tagID)
+
+	# Check if the tag exists in both dictionaries
+    if (tagID in videoDict) and (tagID in lightsColorsDict):
+        print "This tag exists in both dictionaries."
+    else:
+        print "This tag doesn't exist in at least on of the dictionaries."
+	
+	# Exit loop
+    loop = 0
     return
 
 # readFile
@@ -71,15 +72,11 @@ print "Reading videos file..."
 videoDict = readFile("videoscolors.txt", "videos")
 lightsColorsDict = readFile("videoscolors.txt", "lights")
 
-#DEBUG
-print videoDict
-print lightsColorsDict
 
 
 # Setup our reader connection through UART
 # To verify from Python CLI, print(clf) should result in /dev/AMA0
 
-'''
 print "Initiating reader..."
 try:
     clf = nfc.ContactlessFrontend('tty')
@@ -92,6 +89,4 @@ else:
     loop = 1; 
     while loop == 1: 
         print "Waiting for tag to read..."
-        clf.connect(rdwr={'on-connect': printTag})
-'''
-
+        clf.connect(rdwr={'on-connect': tagToVid})
