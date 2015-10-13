@@ -21,6 +21,12 @@ def closeReader():
 	loop = 0
 	return
 
+def playVideo(videoName):
+
+    # Plays video passed on file name passed to it.
+    videoDir = "/usr/bin/videos/"
+    return
+
 def tagToVid(tag):
     global loop
     global videoDict
@@ -31,9 +37,14 @@ def tagToVid(tag):
 
 	# Check if the tag exists in both dictionaries
     if (tagID in videoDict) and (tagID in lightsColorsDict):
-        print "This tag exists in both dictionaries."
+        #print "This tag exists in both dictionaries."
     else:
-        print "This tag doesn't exist in at least on of the dictionaries."
+        #print "This tag doesn't exist in at least on of the dictionaries."
+	
+	#Get video to play
+    video = videoDict.get(tagID)
+    
+    print video
 	
 	# Exit loop
     loop = 0
