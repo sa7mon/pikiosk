@@ -80,8 +80,8 @@ def readFile(file, mode):
 
 # Read the file with videos and tag IDs into a dict
 print "Reading videos file..."
-videoDict = readFile("videoscolors.txt", "videos")
-lightsColorsDict = readFile("videoscolors.txt", "lights")
+videoDict = readFile("videos.txt", "videos")
+lightsColorsDict = readFile("videos.txt", "lights")
 
 
 

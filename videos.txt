@@ -1,3 +1,3 @@
-asdf=video1
-qwer=video2
-uiop=video3
+04C023D24C2880=video1=#11FF1D
+048D495A002980=video2=#22EE1D
+04413E5A002980=video3=#33DD1D
