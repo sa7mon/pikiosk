@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-####
+#################################
 #
 # Written by: Dan Salmon
 # Created on: 10/02/15 
 #
-####
+#################################
 
 ################   IMPORTS   #################
 import sys
@@ -16,11 +16,12 @@ import nfc
 
 def closeReader():
 	global clf
+	global loop 
+
 	# Close the reader
 	clf.close()
+
 	# Then set loop to not 1 to cleanly exit program instead of suspending it.
-	
-	global loop 
 	loop = 0
 	return
 
@@ -43,12 +44,12 @@ def on_connect(tag):
 	
     return
 
-# readFile
-# Reads a file into a dictionary
-#
-# file data needs to be in 'key=video=color' format
-# mode can be either "videos" or "lights"
 def readFile(file, mode):
+	# readFile - Reads a file into a dictionary
+	#
+	# file data needs to be in 'key=video=color' format
+	# mode can be either "videos" or "lights"
+
 	# Initialize a blank dictionary to fill and then return
 	readDict = {}
 	
@@ -60,8 +61,8 @@ def readFile(file, mode):
 	# Open the file as text
 	with open(file, "r") as text:
 		# For each line in the test file, do the following
-            	# Split the line into 2 lines delimited by the equal sign
-            	# Make the first string the dict key and the second the dict value
+        # Split the line into 2 lines delimited by the equal sign
+    	# Make the first string the dict key and the second the dict value
 		for line in text:
 			if (mode == "videos"):
 				readDict[line.split('=', 2)[0]] = line.split('=', 2)[1].strip('\n')
@@ -69,12 +70,24 @@ def readFile(file, mode):
 				readDict[line.split('=', 3)[0]] = line.split('=', 3)[2].strip('\n')
 	return readDict 
 
+################# VARIABLES #######################
+
+# Our flag to keep looping later
+loop = 1
+
+# The folder containing all the videos to play
+dirVideos = "/home/osmc/Movies/"
+
+# The text file containing our video names, tagIDs, and light colors
+fileVideos = "videos.txt"
+
+
 ##################   MAIN PROGRAM   ####################### 
 
 # Read the file with videos and tag IDs into a dict
 print "Reading videos file..."
-videoDict = readFile("videos.txt", "videos")
-lightsColorsDict = readFile("videos.txt", "lights")
+videoDict = readFile(fileVideos, "videos")
+lightsColorsDict = readFile(fileVideos, "lights")
 
 
 # Setup our reader connection through UART
@@ -89,7 +102,6 @@ else:
     
     # Continuously listen for tags nearby. Fire an event when we see one.
     # Make loop not 1 if loop needs to break
-    loop = 1; 
     while loop == 1: 
         print "Waiting for tag to read..."
         clf.connect(rdwr={'on-connect': on_connect})
