@@ -10,7 +10,10 @@
 ################   IMPORTS   #################
 import sys
 sys.path.append("/home/osmc/Scripts/nfcpy/trunk/")
-import nfc 
+import nfc
+import requests
+import json
+import urllib
 
 ###############   FUNCTIONS  #################
 
@@ -25,8 +28,20 @@ def closeReader():
 	loop = 0
 	return
 
+def executeRPC(rpcpayload):
+	# Kodi config #
+	kodi_host = 'localhost'
+	kodi_port = 80
+ 
+	#Base URL of the json RPC calls. For GET calls we append a "request" URI 
+	#parameter. For POSTs, we add the payload as JSON the the HTTP request body
+	kodi_json_rpc_url = "http://" + kodi_host + ":" + str(kodi_port) + "/jsonrpc"
+	
+	url_param = urllib.urlencode({'request': json.dumps(rpcpayload)}) 
+	
+	return requests.get(kodi_json_rpc_url + '?' + url_param,headers={'content-type': 'application/json'})
+
 def on_connect(tag):
-    global loop
     global videoDict
     global lightsColorsDict
     
@@ -36,13 +51,14 @@ def on_connect(tag):
     # Check if the tag exists in both dictionaries
     if not ((tagID in videoDict) and (tagID in lightsColorsDict)):
         print "This tag doesn't exist in one of the dictionaries."
-    	
-    #Get video to play
-    video = videoDict.get(tagID)
-    
-    print video
-	
-    return
+    	return
+    else: 
+	    #Get video to play
+	    video = videoDict.get(tagID)
+	    
+	    print video
+		
+	    return
 
 def readFile(file, mode):
 	# readFile - Reads a file into a dictionary
@@ -80,6 +96,18 @@ dirVideos = "/home/osmc/Movies/"
 
 # The text file containing our video names, tagIDs, and light colors
 fileVideos = "videos.txt"
+
+# File to loop while waiting for tag
+fileStandbyVideo = "Sample3.mp4"
+
+# JSON-RPC payloads to send to Kodi on localhost
+plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Videos/Sample1.mp4"}}}
+plPlaylistClear = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Clear","params": {"playlistid": 1}}
+plPlaylistAdd2= {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Videos/Sample-Standby.mp4"}}}
+plPlayerOpen = {"jsonrpc": "2.0","id": 1,"method": "Player.Open","params": {"item": {"playlistid": 1}}}
+plPlaylistGetItems = {"jsonrpc": "2.0","id": 1,"method": "Playlist.GetItems","params": {"playlistid": 1}}
+plPlayerSetRepeat = {"jsonrpc": "2.0","id": 1,"method": "Player.SetRepeat","params": {"playerid": 1,"repeat": "all"}}
+
 
 
 ##################   MAIN PROGRAM   ####################### 
