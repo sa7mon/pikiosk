@@ -42,23 +42,23 @@ def executeRPC(rpcpayload):
 	return requests.get(kodi_json_rpc_url + '?' + url_param,headers={'content-type': 'application/json'})
 
 def on_connect(tag):
-    global videoDict
-    global lightsColorsDict
-    
-    # Get the tag's ID 
-    tagID = str(tag).split("ID=", 1)[1]
+	global videoDict
+	global lightsColorsDict
+	
+	# Get the tag's ID 
+	tagID = str(tag).split("ID=", 1)[1]
 
-    # Check if the tag exists in both dictionaries
-    if not ((tagID in videoDict) and (tagID in lightsColorsDict)):
-        print "This tag doesn't exist in one of the dictionaries."
-    	return
-    else: 
-	    #Get video to play
-	    video = videoDict.get(tagID)
-	    
-	    print video
+	# Check if the tag exists in both dictionaries
+	if not ((tagID in videoDict) and (tagID in lightsColorsDict)):
+		print "This tag doesn't exist in one of the dictionaries."
+		return
+	else: 
+		#Get video to play
+		video = videoDict.get(tagID)
 		
-	    return
+		print video
+		
+		return
 
 def readFile(file, mode):
 	# readFile - Reads a file into a dictionary
@@ -77,8 +77,8 @@ def readFile(file, mode):
 	# Open the file as text
 	with open(file, "r") as text:
 		# For each line in the test file, do the following
-        # Split the line into 2 lines delimited by the equal sign
-    	# Make the first string the dict key and the second the dict value
+		# Split the line into 2 lines delimited by the equal sign
+		# Make the first string the dict key and the second the dict value
 		for line in text:
 			if (mode == "videos"):
 				readDict[line.split('=', 2)[0]] = line.split('=', 2)[1].strip('\n')
@@ -101,13 +101,11 @@ fileVideos = "videos.txt"
 fileStandbyVideo = "Sample3.mp4"
 
 # JSON-RPC payloads to send to Kodi on localhost
-plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Videos/Sample1.mp4"}}}
+plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + "Sample1.mp4"}}}
 plPlaylistClear = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Clear","params": {"playlistid": 1}}
-plPlaylistAdd2= {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Videos/Sample-Standby.mp4"}}}
+plPlaylistAdd2= {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + fileStandbyVideo}}}
 plPlayerOpen = {"jsonrpc": "2.0","id": 1,"method": "Player.Open","params": {"item": {"playlistid": 1}}}
-plPlaylistGetItems = {"jsonrpc": "2.0","id": 1,"method": "Playlist.GetItems","params": {"playlistid": 1}}
 plPlayerSetRepeat = {"jsonrpc": "2.0","id": 1,"method": "Player.SetRepeat","params": {"playerid": 1,"repeat": "all"}}
-
 
 
 ##################   MAIN PROGRAM   ####################### 
@@ -119,18 +117,31 @@ lightsColorsDict = readFile(fileVideos, "lights")
 
 
 # Setup our reader connection through UART
-# To verify from Python CLI, print(clf) should result in /dev/AMA0
-# Alternately, 'tty:AMA0:pn532' will probably work in place of 'tty'
+# To diagnose issues:
+# 	To verify from Python CLI, print(clf) should result in /dev/AMA0
+# 	Alternately, 'tty:AMA0:pn532' will probably work in place of 'tty'
 print "Initiating reader..."
 try:
-    clf = nfc.ContactlessFrontend('tty')
+	clf = nfc.ContactlessFrontend('tty')
 except IOError:
-    print "Couldn't initialize reader (IOError)"
+	print "Couldn't initialize reader (IOError)"
 else: 
-    
-    # Continuously listen for tags nearby. Fire an event when we see one.
-    # Make loop not 1 if loop needs to break
-    while loop == 1: 
-        print "Waiting for tag to read..."
-        clf.connect(rdwr={'on-connect': on_connect})
+	# Start playing standby video
+	print "Clearing playlist"
+	print executeRPC(plPlaylistClear).text
+	# Add standby video to playlist
+	print "Adding standby video to playlist"
+	print executeRPC(plPlaylistAdd2).text
+	# Set player repeat to 'one'
+	print "Setting player repeat to one"
+	print executeRPC(plPlayerSetRepeat).text
+	# Open player
+	print "Opening player"
+	print executeRPC(plPlayerOpen).text
+	
+	# Continuously listen for tags nearby. Fire an event when we see one.
+	# Make loop not 1 if loop needs to break
+	while loop == 1: 
+		print "Waiting for tag to read..."
+		clf.connect(rdwr={'on-connect': on_connect})
 	closeReader()
