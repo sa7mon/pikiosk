@@ -24,13 +24,7 @@ def closeReader():
 	loop = 0
 	return
 
-def playVideo(videoName):
-
-    # Plays video passed on file name passed to it.
-    videoDir = "/usr/bin/videos/"
-    return
-
-def tagToVid(tag):
+def on_connect(tag):
     global loop
     global videoDict
     global lightsColorsDict
@@ -38,19 +32,15 @@ def tagToVid(tag):
     # Get the tag's ID 
     tagID = str(tag).split("ID=", 1)[1]
 
-	# Check if the tag exists in both dictionaries
-    if (tagID in videoDict) and (tagID in lightsColorsDict):
-        print "This tag exists in both dictionaries."
-    else:
-        print "This tag doesn't exist in at least on of the dictionaries."
-	
-	#Get video to play
+    # Check if the tag exists in both dictionaries
+    if not ((tagID in videoDict) and (tagID in lightsColorsDict)):
+        print "This tag doesn't exist in one of the dictionaries."
+    	
+    #Get video to play
     video = videoDict.get(tagID)
     
     print video
 	
-	# Exit loop
-    loop = 0
     return
 
 # readFile
@@ -87,10 +77,9 @@ videoDict = readFile("videos.txt", "videos")
 lightsColorsDict = readFile("videos.txt", "lights")
 
 
-
 # Setup our reader connection through UART
 # To verify from Python CLI, print(clf) should result in /dev/AMA0
-
+# Alternately, 'tty:AMA0:pn532' will probably work in place of 'tty'
 print "Initiating reader..."
 try:
     clf = nfc.ContactlessFrontend('tty')
@@ -103,5 +92,5 @@ else:
     loop = 1; 
     while loop == 1: 
         print "Waiting for tag to read..."
-        clf.connect(rdwr={'on-connect': tagToVid})
+        clf.connect(rdwr={'on-connect': on_connect})
 	closeReader()
