@@ -53,10 +53,28 @@ def on_connect(tag):
 		print "This tag doesn't exist in one of the dictionaries."
 		return
 	else: 
-		#Get video to play
+		#Get video filename to play: e.g. Sample1.mp4
 		video = videoDict.get(tagID)
-		
-		print video
+		print "video: " + video
+		# Clear playlist
+		print "Clearing playlist"
+		print executeRPC(plPlaylistClear)
+		# Add the appropriate video the playlist
+		print "Adding specific video to playlist" #DEBUG HARDCODING VIDEO1 FOR NOW NEED TO CHANGE
+		print executeRPC(plPlaylistAdd)
+		# Open player
+		print "Opening player..."
+		print executeRPC(plPlayerOpen)
+		# Clear playlist
+		print "Clearing playlist"
+		print executeRPC(plPlaylistClear)
+		# Add standby video to playlist
+		print "Adding standby video to playlist"
+		print executeRPC(plPlaylistAddStandby)
+		# Set player repeat to 'one'
+		print "Setting player repeat to one"
+		print executeRPC(plPlayerSetRepeat)
+
 		
 		return
 
@@ -98,12 +116,12 @@ dirVideos = "/home/osmc/Movies/"
 fileVideos = "videos.txt"
 
 # File to loop while waiting for tag
-fileStandbyVideo = "Sample3.mp4"
+fileStandbyVideo = "Sample-Standby.mp4"
 
 # JSON-RPC payloads to send to Kodi on localhost
-plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + "Sample1.mp4"}}}
+plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Movies/Sample1.mp4"}}}
 plPlaylistClear = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Clear","params": {"playlistid": 1}}
-plPlaylistAdd2= {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + fileStandbyVideo}}}
+plPlaylistAddStandby = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Videos/Sample-Standby.mp4"}}}
 plPlayerOpen = {"jsonrpc": "2.0","id": 1,"method": "Player.Open","params": {"item": {"playlistid": 1}}}
 plPlayerSetRepeat = {"jsonrpc": "2.0","id": 1,"method": "Player.SetRepeat","params": {"playerid": 1,"repeat": "all"}}
 
@@ -131,7 +149,7 @@ else:
 	print executeRPC(plPlaylistClear).text
 	# Add standby video to playlist
 	print "Adding standby video to playlist"
-	print executeRPC(plPlaylistAdd2).text
+	print executeRPC(plPlaylistAddStandby).text
 	# Set player repeat to 'one'
 	print "Setting player repeat to one"
 	print executeRPC(plPlayerSetRepeat).text
