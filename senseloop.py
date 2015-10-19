@@ -8,13 +8,16 @@
 ####
 
 ################   IMPORTS   #################
+import sys
+sys.path.append("/home/osmc/Scripts/nfcpy/trunk/")
 import nfc 
 
 ###############   FUNCTIONS  #################
 
 def closeReader():
+	global clf
 	# Close the reader
-	#nfc.closeReader(clf)
+	clf.close()
 	# Then set loop to not 1 to cleanly exit program instead of suspending it.
 	
 	global loop 
@@ -37,9 +40,9 @@ def tagToVid(tag):
 
 	# Check if the tag exists in both dictionaries
     if (tagID in videoDict) and (tagID in lightsColorsDict):
-        #print "This tag exists in both dictionaries."
+        print "This tag exists in both dictionaries."
     else:
-        #print "This tag doesn't exist in at least on of the dictionaries."
+        print "This tag doesn't exist in at least on of the dictionaries."
 	
 	#Get video to play
     video = videoDict.get(tagID)
@@ -101,3 +104,4 @@ else:
     while loop == 1: 
         print "Waiting for tag to read..."
         clf.connect(rdwr={'on-connect': tagToVid})
+	closeReader()
