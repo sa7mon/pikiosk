@@ -41,7 +41,7 @@ print "Getting playlist info"
 print executeRPC(payload7).text
 
 print "Clearing playlist"
-print executeRPC(plClearPlist).text
+print executeRPC(plClearPlaylist).text
 
 print "Adding standby video to playlist"
 print executeRPC(payload5).text
