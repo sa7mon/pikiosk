@@ -11,6 +11,8 @@
 
 
 ################   IMPORTS   #################
+import sys
+sys.path.append("/home/osmc/Scripts/nfcpy/trunk/")
 import nfc 
 
 ################  FUNCTIONS  #################
