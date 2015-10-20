@@ -50,6 +50,13 @@ def on_connect(tag):
 	# Get the tag's ID 
 	tagID = str(tag).split("ID=", 1)[1]
 
+	# DEBUG - Check for kill tag
+	if (str(tagID) == "046B435A002980"):
+		# Reading this tag should kill the program cleanly.
+		print "Kill tag read. Shutting script down..."
+		closeReader()
+		return
+
 	# Check if the tag exists in both dictionaries
 	if not ((tagID in videoDict) and (tagID in lightsColorsDict)):
 		print "This tag doesn't exist in one of the dictionaries."
@@ -83,7 +90,6 @@ def on_connect(tag):
 		print "Setting player repeat to one"
 		print executeRPC(plPlayerSetRepeat)
 
-		closeReader() # DEBUG to exit the program after tag read
 		return
 
 def readFile(file, mode):
