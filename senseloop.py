@@ -44,6 +44,8 @@ def executeRPC(rpcpayload):
 def on_connect(tag):
 	global videoDict
 	global lightsColorsDict
+	global dirVideos
+	global fileStandbyVideo
 	
 	# Get the tag's ID 
 	tagID = str(tag).split("ID=", 1)[1]
@@ -55,27 +57,33 @@ def on_connect(tag):
 	else: 
 		#Get video filename to play: e.g. Sample1.mp4
 		video = videoDict.get(tagID)
-		print "video: " + video
+
 		# Clear playlist
 		print "Clearing playlist"
 		print executeRPC(plPlaylistClear)
+
 		# Add the appropriate video the playlist
-		print "Adding specific video to playlist" #DEBUG HARDCODING VIDEO1 FOR NOW NEED TO CHANGE
-		print executeRPC(plPlaylistAdd)
+		print "Adding specific video to playlist"
+		plAddVideo = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + video}}}
+		print executeRPC(plAddVideo).text
+
 		# Open player
 		print "Opening player..."
 		print executeRPC(plPlayerOpen)
+
 		# Clear playlist
 		print "Clearing playlist"
 		print executeRPC(plPlaylistClear)
+
 		# Add standby video to playlist
 		print "Adding standby video to playlist"
 		print executeRPC(plPlaylistAddStandby)
+
 		# Set player repeat to 'one'
 		print "Setting player repeat to one"
 		print executeRPC(plPlayerSetRepeat)
 
-		
+		closeReader() # DEBUG to exit the program after tag read
 		return
 
 def readFile(file, mode):
@@ -110,7 +118,7 @@ def readFile(file, mode):
 loop = 1
 
 # The folder containing all the videos to play
-dirVideos = "/home/osmc/Movies/"
+dirVideos = "/home/osmc/Videos/"
 
 # The text file containing our video names, tagIDs, and light colors
 fileVideos = "videos.txt"
@@ -121,7 +129,7 @@ fileStandbyVideo = "Sample-Standby.mp4"
 # JSON-RPC payloads to send to Kodi on localhost
 plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Movies/Sample1.mp4"}}}
 plPlaylistClear = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Clear","params": {"playlistid": 1}}
-plPlaylistAddStandby = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Videos/Sample-Standby.mp4"}}}
+plPlaylistAddStandby = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + fileStandbyVideo}}}
 plPlayerOpen = {"jsonrpc": "2.0","id": 1,"method": "Player.Open","params": {"item": {"playlistid": 1}}}
 plPlayerSetRepeat = {"jsonrpc": "2.0","id": 1,"method": "Player.SetRepeat","params": {"playerid": 1,"repeat": "all"}}
 
