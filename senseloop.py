@@ -133,7 +133,6 @@ fileVideos = "videos.txt"
 fileStandbyVideo = "Sample-Standby.mp4"
 
 # JSON-RPC payloads to send to Kodi on localhost
-plPlaylistAdd = {"jsonrpc": "2.0","id":	1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": "/home/osmc/Movies/Sample1.mp4"}}}
 plPlaylistClear = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Clear","params": {"playlistid": 1}}
 plPlaylistAddStandby = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + fileStandbyVideo}}}
 plPlayerOpen = {"jsonrpc": "2.0","id": 1,"method": "Player.Open","params": {"item": {"playlistid": 1}}}
@@ -161,19 +160,21 @@ else:
 	# Start playing standby video
 	print "Clearing playlist"
 	print executeRPC(plPlaylistClear).text
+
 	# Add standby video to playlist
 	print "Adding standby video to playlist"
 	print executeRPC(plPlaylistAddStandby).text
+
 	# Set player repeat to 'one'
 	print "Setting player repeat to one"
 	print executeRPC(plPlayerSetRepeat).text
+
 	# Open player
 	print "Opening player"
-	print executeRPC(plPlayerOpen).text
+	print executeRPC(plPlayerOpen).text 
 	
 	# Continuously listen for tags nearby. Fire an event when we see one.
-	# Make loop not 1 if loop needs to break
-	while loop == 1: 
+	# Make loop not 1 to stop waiting for tags.
+	while loop == 1:
 		print "Waiting for tag to read..."
 		clf.connect(rdwr={'on-connect': on_connect})
-	closeReader()
