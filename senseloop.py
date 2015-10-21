@@ -10,10 +10,8 @@
 ################   IMPORTS   #################
 import sys
 sys.path.append("/home/osmc/Scripts/nfcpy/trunk/")
-import nfc
-import requests
-import json
-import urllib
+import nfc, requests, json, urllib
+
 
 ###############   FUNCTIONS  #################
 
@@ -60,7 +58,7 @@ def on_connect(tag):
 	# Check if the tag exists in both dictionaries
 	if not ((tagID in videoDict) and (tagID in lightsColorsDict)):
 		print "This tag doesn't exist in one of the dictionaries."
-		return
+		return True
 	else: 
 		#Get video filename to play: e.g. Sample1.mp4
 		video = videoDict.get(tagID)
@@ -157,7 +155,7 @@ try:
 except IOError:
 	print "Couldn't initialize reader (IOError)"
 else: 
-	# Start playing standby video
+	# Clear playlist
 	print "Clearing playlist"
 	print executeRPC(plPlaylistClear).text
 
