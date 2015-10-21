@@ -52,6 +52,7 @@ def on_connect(tag):
 	if (str(tagID) == "046B435A002980"):
 		# Reading this tag should kill the program cleanly.
 		print "Kill tag read. Shutting script down..."
+		print executeRPC(plPlayerStop).text
 		closeReader()
 		return
 
@@ -135,6 +136,7 @@ plPlaylistClear = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Clear","params":
 plPlaylistAddStandby = {"jsonrpc": "2.0","id": 1,"method": "Playlist.Add","params": {"playlistid": 1,"item": {"file": dirVideos + fileStandbyVideo}}}
 plPlayerOpen = {"jsonrpc": "2.0","id": 1,"method": "Player.Open","params": {"item": {"playlistid": 1}}}
 plPlayerSetRepeat = {"jsonrpc": "2.0","id": 1,"method": "Player.SetRepeat","params": {"playerid": 1,"repeat": "all"}}
+plPlayerStop = {"jsonrpc": "2.0","id": 1,"method": "Player.Stop","params": {"playerid": 1}}
 
 
 ##################   MAIN PROGRAM   ####################### 
