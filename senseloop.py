@@ -90,7 +90,7 @@ def on_connect(tag):
 		print "Setting player repeat to one"
 		print executeRPC(plPlayerSetRepeat)
 
-		return
+		return True
 
 def readFile(file, mode):
 	# readFile - Reads a file into a dictionary
