@@ -17,11 +17,11 @@ import nfc, requests, json, urllib
 # Our flag to keep looping later
 loop = 1
 
-# The folder containing all the videos to play
-dirVideos = "/home/osmc/Videos/"
-
 # The text file containing our video names, tagIDs, and light colors
 fileVideos = "videos.txt"
+
+# The folder containing all the videos to play
+dirVideos = "/home/osmc/Videos/"
 
 # File to loop while waiting for tag
 fileStandbyVideo = "Sample-Standby.mp4"
@@ -110,10 +110,6 @@ def on_connect(tag):
     true - Only return true when the tag is released.
 
     """
-    #global videoDict
-    #global lightsColorsDict
-    #global dirVideos
-    #global fileStandbyVideo
 
     # Get the tag's ID
     tagID = str(tag).split("ID=", 1)[1]
