@@ -12,11 +12,66 @@ import sys
 sys.path.append("/home/osmc/Scripts/nfcpy/trunk/")
 import nfc, requests, json, urllib
 
+################# VARIABLES #######################
+
+# Our flag to keep looping later
+loop = 1
+
+# The folder containing all the videos to play
+dirVideos = "/home/osmc/Videos/"
+
+# The text file containing our video names, tagIDs, and light colors
+fileVideos = "videos.txt"
+
+# File to loop while waiting for tag
+fileStandbyVideo = "Sample-Standby.mp4"
+
+# Kodi config #
+kodi_host = 'localhost'
+kodi_port = 80
+
+# JSON-RPC payloads to send to Kodi on localhost
+plPlaylistClear = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "Playlist.Clear",
+    "params": {"playlistid": 1}
+}
+plPlaylistAddStandby = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "Playlist.Add",
+    "params": {
+        "playlistid": 1,
+        "item": {"file": dirVideos + fileStandbyVideo}
+    }
+}
+plPlayerOpen = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "Player.Open",
+    "params": {"item": {"playlistid": 1}}
+}
+plPlayerSetRepeat = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "Player.SetRepeat",
+    "params": {"playerid": 1, "repeat": "all"}
+}
+plPlayerStop = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "Player.Stop",
+    "params": {"playerid": 1}
+}
+
 
 ###############   FUNCTIONS  #################
 
 def closeReader():
     """ Close the reader and stop watching for tags. """
+    global loop
+
     # Close the reader
     clf.close()
 
@@ -25,9 +80,7 @@ def closeReader():
     return
 
 def executeRPC(rpcpayload):
-    # Kodi config #
-    kodi_host = 'localhost'
-    kodi_port = 80
+    """ Execute the payload on the Kodi server JSON-RPC API. """
 
     #Base URL of the json RPC calls. For GET calls we append a "request" URI
     #parameter. For POSTs, we add the payload as JSON the the HTTP request body
@@ -35,9 +88,28 @@ def executeRPC(rpcpayload):
 
     url_param = urllib.urlencode({'request': json.dumps(rpcpayload)})
 
+    # Return the server's response to our request.
+    # If not a get method, will return status of request (hopefully 200)
     return requests.get(kodi_json_rpc_url + '?' + url_param, headers={'content-type': 'application/json'})
 
 def on_connect(tag):
+    """
+    When a tag is read, play that video
+
+    Function is fired when a tag is present, and only returns
+    once the tag is released. Look up the tagID in the
+    dict of videos to find the video play, then execute
+    that RPC payload. Then queue up the standby video and
+    loop it.
+
+    Arguments:
+    tag - type: nfc.tag.Tag 
+        (http://nfcpy.org/latest/modules/tag.html#nfc.tag.Tag)
+
+    Returns:
+    true - Only return true when the tag is released.
+
+    """
     #global videoDict
     #global lightsColorsDict
     #global dirVideos
@@ -98,8 +170,23 @@ def on_connect(tag):
         return True
 
 def readFile(filename, mode):
-    # readFile - Reads a file into a dictionary
-    #
+    """
+    Read a specially-formatted text file into a dict
+
+    Reads a text file at location 'filename' into a
+    returned dict. Since our text file has 3 columns,
+    readFile() will have to be run twice. Once for each
+    dict to create.
+
+    Arguments:
+    filename - type: String - Can be relative or absolute,
+        needs to be formatted in format: tagID=file=lightcolor
+    mode - type: String - Allowed: "videos", "lights"
+
+    Returns:
+    readDict - type: dict - Will return empty if 'mode' is not
+        an allowed value.
+    """
     # file data needs to be in 'key=video=color' format
     # mode can be either "videos" or "lights"
 
@@ -122,55 +209,6 @@ def readFile(filename, mode):
             elif mode == "lights":
                 readDict[line.split('=', 3)[0]] = line.split('=', 3)[2].strip('\n')
     return readDict
-
-################# VARIABLES #######################
-
-# Our flag to keep looping later
-loop = 1
-
-# The folder containing all the videos to play
-dirVideos = "/home/osmc/Videos/"
-
-# The text file containing our video names, tagIDs, and light colors
-fileVideos = "videos.txt"
-
-# File to loop while waiting for tag
-fileStandbyVideo = "Sample-Standby.mp4"
-
-# JSON-RPC payloads to send to Kodi on localhost
-plPlaylistClear = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "Playlist.Clear",
-    "params": {"playlistid": 1}
-}
-plPlaylistAddStandby = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "Playlist.Add",
-    "params": {
-        "playlistid": 1,
-        "item": {"file": dirVideos + fileStandbyVideo}
-    }
-}
-plPlayerOpen = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "Player.Open",
-    "params": {"item": {"playlistid": 1}}
-}
-plPlayerSetRepeat = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "Player.SetRepeat",
-    "params": {"playerid": 1, "repeat": "all"}
-}
-plPlayerStop = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "Player.Stop",
-    "params": {"playerid": 1}
-}
 
 
 ##################   MAIN PROGRAM   #######################
