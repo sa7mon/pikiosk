@@ -1,12 +1,5 @@
-# NeoPixel library strandtest example
-# Author: Tony DiCola (tony@tonydicola.com)
-#
-# Direct port of the Arduino NeoPixel library strandtest example.  Showcases
-# various animations on a strip of NeoPixels.
 import time
-
 from neopixel import *
-
 
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels.
@@ -16,9 +9,7 @@ LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 
-
 # Define functions which animate LEDs in various ways.
-
 def whitePulse(strip, ceiling, wait_ms=20):
     for j in range(ceiling): 
         for i in range(strip.numPixels()):
