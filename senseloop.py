@@ -162,9 +162,18 @@ def on_connect(tag):
         }
         print executeRPC(plAddVideo).text
 
-        # Open player
-        print "Opening player..."
-        print executeRPC(plPlayerOpen)
+        # Switch to next item in playlist (the video we just added)
+        print "Switching to next video in the playlist"
+        plNextVideo = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "Player.goto",
+            "params": {
+                "playerid": 1,
+                "to": "next"
+            }
+        }
+        print executeRPC(plNextVideo).text
 
         # Clear playlist
         print "Clearing playlist"
