@@ -29,6 +29,8 @@ def whitePulse(strip, ceiling, wait_ms=20):
                 # Change the strips brightness
                 strip.setBrightness(j)
 
+# Changes the whole ring to one solid color.
+# To "blank out" the ring, call any color and set brightness to 0
 def solidColor(strip, brightness, R, G, B):
     for i in range(strip.numPixels()):
         strip.setPixelColorRGB(i,R,G,B)
@@ -47,4 +49,4 @@ if __name__ == '__main__':
     while True:
         whitePulse(strip, 150, 15)
     '''
-    solidColor(strip,100,0,0,128)
+    solidColor(strip,150,0,0,128)
