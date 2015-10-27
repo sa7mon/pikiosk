@@ -190,6 +190,8 @@ def on_connect(tag):
         print "Setting player repeat to one"
         print executeRPC(plPlayerSetRepeat)
 
+
+
         return True
 
 def readFile(filename, mode):
@@ -306,3 +308,4 @@ else:
     while loop == 1:
         print "Waiting for tag to read..."
         clf.connect(rdwr={'on-connect': on_connect})
+        solidColor(strip,0,0,0,0)
