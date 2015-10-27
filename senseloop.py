@@ -10,7 +10,8 @@
 ################   IMPORTS   #################
 import sys
 sys.path.append("/home/osmc/Scripts/nfcpy/trunk/")
-import nfc, requests, json, urllib
+import nfc, requests, json, urllib, time
+from neopixel import *
 
 ################# VARIABLES #######################
 
@@ -65,6 +66,14 @@ plPlayerStop = {
     "params": {"playerid": 1}
 }
 
+# LED strip configuration:
+LED_COUNT      = 60      # Number of LED pixels.
+LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
+LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
+LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
+LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
+
 
 ###############   FUNCTIONS  #################
 
@@ -103,7 +112,7 @@ def on_connect(tag):
     loop it.
 
     Arguments:
-    tag - type: nfc.tag.Tag 
+    tag - type: nfc.tag.Tag
         (http://nfcpy.org/latest/modules/tag.html#nfc.tag.Tag)
 
     Returns:
@@ -206,6 +215,32 @@ def readFile(filename, mode):
                 readDict[line.split('=', 3)[0]] = line.split('=', 3)[2].strip('\n')
     return readDict
 
+def solidColor(strip, brightness, R, G, B):
+    # Changes the whole ring to one solid color.
+    # To "blank out" the ring, call any color and set brightness to 0
+    for i in range(strip.numPixels()):
+        strip.setPixelColorRGB(i,R,G,B)
+    strip.setBrightness(brightness)
+    strip.show()
+
+def whitePulse(strip, ceiling, wait_ms=20):
+    for j in range(ceiling): 
+        for i in range(strip.numPixels()):
+            strip.setPixelColorRGB(i, 127, 127, 127)
+        strip.show()
+        time.sleep(wait_ms/1000.0)
+        # Change the strips brightness
+        strip.setBrightness(j)
+        # Once we get to the top of the brightness, start fading down instead of up
+        if j == (ceiling - 1):
+            print "Hit the top!"
+            for j in range((ceiling - 2), 0, -1):
+                for i in range(strip.numPixels()):
+                    strip.setPixelColorRGB(i, 127, 127, 127)
+                strip.show()
+                time.sleep(wait_ms/1000.0)
+                # Change the strips brightness
+                strip.setBrightness(j)
 
 ##################   MAIN PROGRAM   #######################
 
@@ -214,6 +249,12 @@ print "Reading videos file..."
 videoDict = readFile(fileVideos, "videos")
 lightsColorsDict = readFile(fileVideos, "lights")
 
+# Create NeoPixel object with appropriate configuration.
+strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+# Intialize the library (must be called once before other functions).
+strip.begin()
+
+solidColor(strip,150,127,127,127)
 
 # Setup our reader connection through UART
 # To diagnose issues:
