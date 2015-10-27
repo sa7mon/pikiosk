@@ -139,6 +139,12 @@ def on_connect(tag):
         #Get video filename to play: e.g. Sample1.mp4
         video = videoDict.get(tagID)
 
+        #Get color to change ring to 
+        color = lightsColorsDict.get(tagID)
+
+        # Change ring to appropriate color
+        solidColor(strip, 150, int(color.split(",", 3)[0]),int(color.split(",", 3)[1]),int(color.split(",", 3)[2]))
+
         # Clear playlist
         print "Clearing playlist"
         print executeRPC(plPlaylistClear)
@@ -224,23 +230,24 @@ def solidColor(strip, brightness, R, G, B):
     strip.show()
 
 def whitePulse(strip, ceiling, wait_ms=20):
-    for j in range(ceiling): 
-        for i in range(strip.numPixels()):
-            strip.setPixelColorRGB(i, 127, 127, 127)
-        strip.show()
-        time.sleep(wait_ms/1000.0)
-        # Change the strips brightness
-        strip.setBrightness(j)
-        # Once we get to the top of the brightness, start fading down instead of up
-        if j == (ceiling - 1):
-            print "Hit the top!"
-            for j in range((ceiling - 2), 0, -1):
-                for i in range(strip.numPixels()):
-                    strip.setPixelColorRGB(i, 127, 127, 127)
-                strip.show()
-                time.sleep(wait_ms/1000.0)
-                # Change the strips brightness
-                strip.setBrightness(j)
+    while something: 
+        for j in range(ceiling): 
+            for i in range(strip.numPixels()):
+                strip.setPixelColorRGB(i, 127, 127, 127)
+            strip.show()
+            time.sleep(wait_ms/1000.0)
+            # Change the strips brightness
+            strip.setBrightness(j)
+            # Once we get to the top of the brightness, start fading down instead of up
+            if j == (ceiling - 1):
+                print "Hit the top!"
+                for j in range((ceiling - 2), 0, -1):
+                    for i in range(strip.numPixels()):
+                        strip.setPixelColorRGB(i, 127, 127, 127)
+                    strip.show()
+                    time.sleep(wait_ms/1000.0)
+                    # Change the strips brightness
+                    strip.setBrightness(j)
 
 ##################   MAIN PROGRAM   #######################
 
@@ -254,7 +261,7 @@ strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, 
 # Intialize the library (must be called once before other functions).
 strip.begin()
 
-solidColor(strip,150,127,127,127)
+solidColor(strip,50,127,127,127) #Dim white
 
 # Setup our reader connection through UART
 # To diagnose issues:
