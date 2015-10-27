@@ -81,6 +81,9 @@ def closeReader():
     """ Close the reader and stop watching for tags. """
     global loop
 
+    # Turn the LED ring off
+    solidColor(strip,0,0,0,0)
+
     # Close the reader
     clf.close()
 
