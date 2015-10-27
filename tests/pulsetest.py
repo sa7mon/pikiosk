@@ -29,6 +29,12 @@ def whitePulse(strip, ceiling, wait_ms=20):
                 # Change the strips brightness
                 strip.setBrightness(j)
 
+def solidColor(strip, brightness, R, G, B):
+    for i in range(strip.numPixels()):
+        strip.setPixelColorRGB(i,R,G,B)
+    strip.setBrightness(brightness)
+    strip.show()
+
 # Main program logic follows:
 if __name__ == '__main__':
     # Create NeoPixel object with appropriate configuration.
@@ -37,5 +43,8 @@ if __name__ == '__main__':
     strip.begin()
 
     print 'Press Ctrl-C to quit.'
+    '''
     while True:
-        whitePulse(strip, 250, 10)
+        whitePulse(strip, 150, 15)
+    '''
+    solidColor(strip,100,0,0,128)
