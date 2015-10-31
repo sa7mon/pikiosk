@@ -37,6 +37,14 @@ def solidColor(strip, brightness, R, G, B):
     strip.setBrightness(brightness)
     strip.show()
 
+def colorWipe(strip, brightness,color, wait_ms=50):
+    """Wipe color across display a pixel at a time."""
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, color)
+        strip.setBrightness(brightness)
+        strip.show()
+        time.sleep(wait_ms/1000.0)
+
 # Main program logic follows:
 if __name__ == '__main__':
     # Create NeoPixel object with appropriate configuration.
@@ -49,4 +57,7 @@ if __name__ == '__main__':
     while True:
         whitePulse(strip, 150, 15)
     '''
-    solidColor(strip,150,0,0,128)
+
+    solidColor(strip,30,127,127,127) #Dim solid white for waiting
+    
+    colorWipe(strip,250, Color(155,0,0), 10)
