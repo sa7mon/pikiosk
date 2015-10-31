@@ -146,7 +146,9 @@ def on_connect(tag):
         color = lightsColorsDict.get(tagID)
 
         # Change ring to appropriate color
-        solidColor(strip, 150, int(color.split(",", 3)[0]),int(color.split(",", 3)[1]),int(color.split(",", 3)[2]))
+        #solidColor(strip, 150, int(color.split(",", 3)[0]),int(color.split(",", 3)[1]),int(color.split(",", 3)[2]))
+
+        colorWipe(strip, 250, Color(int(color.split(",", 3)[0]),int(color.split(",", 3)[1]),int(color.split(",", 3)[2]) ), 5)
 
         # Clear playlist
         print "Clearing playlist"
@@ -263,6 +265,15 @@ def whitePulse(strip, ceiling, wait_ms=20):
                     # Change the strips brightness
                     strip.setBrightness(j)
 
+def colorWipe(strip, brightness,color, wait_ms=50):
+    """Wipe color across display a pixel at a time."""
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, color)
+        strip.setBrightness(brightness)
+        strip.show()
+        time.sleep(wait_ms/1000.0)
+
+
 ##################   MAIN PROGRAM   #######################
 
 # Read the file with videos and tag IDs into a dict
@@ -308,4 +319,4 @@ else:
     while loop == 1:
         print "Waiting for tag to read..."
         clf.connect(rdwr={'on-connect': on_connect})
-        solidColor(strip,0,0,0,0)
+        solidColor(strip,50,127,127,127) #Dim white
