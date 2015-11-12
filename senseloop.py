@@ -82,7 +82,7 @@ def closeReader():
     global loop
 
     # Turn the LED ring off
-    solidColor(strip,0,0,0,0)
+    solidColor(strip, 0, 0, 0, 0)
 
     # Close the reader
     clf.close()
@@ -142,13 +142,13 @@ def on_connect(tag):
         #Get video filename to play: e.g. Sample1.mp4
         video = videoDict.get(tagID)
 
-        #Get color to change ring to 
+        #Get color to change ring to it
         color = lightsColorsDict.get(tagID)
 
         # Change ring to appropriate color
         #solidColor(strip, 150, int(color.split(",", 3)[0]),int(color.split(",", 3)[1]),int(color.split(",", 3)[2]))
 
-        colorWipe(strip, 250, Color(int(color.split(",", 3)[0]),int(color.split(",", 3)[1]),int(color.split(",", 3)[2]) ), 5)
+        colorWipe(strip, 250, Color(int(color.split(",", 3)[0]), int(color.split(",", 3)[1]), int(color.split(",", 3)[2]) ), 5)
 
         # Clear playlist
         print "Clearing playlist"
@@ -238,34 +238,15 @@ def readFile(filename, mode):
     return readDict
 
 def solidColor(strip, brightness, R, G, B):
-    # Changes the whole ring to one solid color.
-    # To "blank out" the ring, call any color and set brightness to 0
+    """ Changes the whole ring to one solid color.
+        To "blank out" the ring, call any color and
+        set brightness to 0 """
     for i in range(strip.numPixels()):
-        strip.setPixelColorRGB(i,R,G,B)
+        strip.setPixelColorRGB(i, R, G, B)
     strip.setBrightness(brightness)
     strip.show()
 
-def whitePulse(strip, ceiling, wait_ms=20):
-    while something: 
-        for j in range(ceiling): 
-            for i in range(strip.numPixels()):
-                strip.setPixelColorRGB(i, 127, 127, 127)
-            strip.show()
-            time.sleep(wait_ms/1000.0)
-            # Change the strips brightness
-            strip.setBrightness(j)
-            # Once we get to the top of the brightness, start fading down instead of up
-            if j == (ceiling - 1):
-                print "Hit the top!"
-                for j in range((ceiling - 2), 0, -1):
-                    for i in range(strip.numPixels()):
-                        strip.setPixelColorRGB(i, 127, 127, 127)
-                    strip.show()
-                    time.sleep(wait_ms/1000.0)
-                    # Change the strips brightness
-                    strip.setBrightness(j)
-
-def colorWipe(strip, brightness,color, wait_ms=50):
+def colorWipe(strip, brightness, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
@@ -286,7 +267,7 @@ strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, 
 # Intialize the library (must be called once before other functions).
 strip.begin()
 
-solidColor(strip,50,127,127,127) #Dim white
+solidColor(strip, 50, 127, 127, 127) #Dim white
 
 # Setup our reader connection through UART
 # To diagnose issues:
@@ -294,9 +275,9 @@ solidColor(strip,50,127,127,127) #Dim white
 #   Alternately, 'tty:AMA0:pn532' will probably work in place of 'tty'
 print "Initiating reader..."
 
-# Try and re-try to initialize reader up to 10 times. Seems to just fail sometimes and
-# needs to just be re-tried.
-for i in range(1,10):
+# Try and re-try to initialize reader up to 10 times. 
+# Seems to just fail sometimes and needs to just be re-tried.
+for i in range(1, 10):
     while True:
         try:
             clf = nfc.ContactlessFrontend('tty')
@@ -327,4 +308,4 @@ print executeRPC(plPlayerOpen).text
 while loop == 1:
     print "Waiting for tag to read..."
     clf.connect(rdwr={'on-connect': on_connect})
-    solidColor(strip,50,127,127,127) #Dim white
+    solidColor(strip, 50, 127, 127, 127) #Dim white
