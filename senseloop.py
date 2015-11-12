@@ -293,30 +293,38 @@ solidColor(strip,50,127,127,127) #Dim white
 #   To verify from Python CLI, print(clf) should result in /dev/AMA0
 #   Alternately, 'tty:AMA0:pn532' will probably work in place of 'tty'
 print "Initiating reader..."
-try:
-    clf = nfc.ContactlessFrontend('tty')
-except IOError:
-    print "Couldn't initialize reader (IOError)"
-else:
-    # Clear playlist
-    print "Clearing playlist"
-    print executeRPC(plPlaylistClear).text
 
-    # Add standby video to playlist
-    print "Adding standby video to playlist"
-    print executeRPC(plPlaylistAddStandby).text
+# Try and re-try to initialize reader up to 10 times. Seems to just fail sometimes and
+# needs to just be re-tried.
+for i in range(1,10):
+    while True:
+        try:
+            clf = nfc.ContactlessFrontend('tty')
+        except IOError:
+            print "IOError: Couldn't initialize reader. (Attempt " + str(i) +")"
+            continue
+        break
+# If we get to here, we've successfully initiated the reader.
+print "Reader initialized successfully."
+# Clear playlist
+print "Clearing playlist"
+print executeRPC(plPlaylistClear).text
 
-    # Set player repeat to 'one'
-    print "Setting player repeat to one"
-    print executeRPC(plPlayerSetRepeat).text
+# Add standby video to playlist
+print "Adding standby video to playlist"
+print executeRPC(plPlaylistAddStandby).text
 
-    # Open player
-    print "Opening player"
-    print executeRPC(plPlayerOpen).text
+# Set player repeat to 'one'
+print "Setting player repeat to one"
+print executeRPC(plPlayerSetRepeat).text
 
-    # Continuously listen for tags nearby. Fire an event when we see one.
-    # Make loop not 1 to stop waiting for tags.
-    while loop == 1:
-        print "Waiting for tag to read..."
-        clf.connect(rdwr={'on-connect': on_connect})
-        solidColor(strip,50,127,127,127) #Dim white
+# Open player
+print "Opening player"
+print executeRPC(plPlayerOpen).text
+
+# Continuously listen for tags nearby. Fire an event when we see one.
+# Make loop not 1 to stop waiting for tags.
+while loop == 1:
+    print "Waiting for tag to read..."
+    clf.connect(rdwr={'on-connect': on_connect})
+    solidColor(strip,50,127,127,127) #Dim white
