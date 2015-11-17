@@ -3,7 +3,9 @@
 #################################
 #
 # Written by: Dan Salmon
+# 	      @bltjetpack / https://danthesalmon.com
 # Created on: 10/02/15
+# Git Repo:   https://github.com/sa7mon/pikiosk
 #
 #################################
 
